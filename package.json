@@ -49,7 +49,7 @@
     "graphql": "^16.11.0",
     "jsonwebtoken": "^9.0.2",
     "nanoid": "^5.1.5",
-    "next": "15.3.2",
+    "next": "15.3.3",
     "payload": "3.39.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
