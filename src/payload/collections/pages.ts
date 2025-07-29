@@ -8,6 +8,7 @@ import type {
 } from 'payload';
 
 import { Role, hasRole, hasRoleOrPublished } from '@/payload/access';
+import { ArticlesTable } from '@/payload/blocks/articles-table';
 import { ButtonLink } from '@/payload/blocks/button-link';
 import { Featured } from '@/payload/blocks/featured';
 import { Form } from '@/payload/blocks/form';
@@ -160,7 +161,7 @@ export const Pages: CollectionConfig<'pages'> = {
       editor: lexicalEditor({
         features: ({ rootFeatures }) => [
           ...rootFeatures,
-          BlocksFeature({ blocks: [ButtonLink, Featured, Form, Image] }),
+          BlocksFeature({ blocks: [ArticlesTable, ButtonLink, Featured, Form, Image] }),
         ],
       }),
     },

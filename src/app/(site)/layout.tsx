@@ -7,6 +7,7 @@ import type { GlobalSlug } from 'payload';
 import { getPayload } from 'payload';
 
 import { Footer } from '@/components/footer';
+import { QueryProvider } from '@/components/providers/query-client-provider';
 import { env } from '@/env/client';
 import type { PayloadFooterGlobal, PayloadNavigationGlobal } from '@/payload/payload-types';
 import payloadConfig from '@/payload/payload.config';
@@ -71,32 +72,37 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       )}
     >
       <body className="flex h-full flex-1 flex-col">
-        <div className="isolate mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 md:flex-row md:p-6">
-          <aside className="w-full shrink-0 border-b border-gold-6 pb-2 md:max-w-56 md:border-r md:border-b-0 md:pr-6 md:pb-0">
-            <div className="sticky top-6 flex w-full items-baseline justify-between after:hidden md:flex-col md:items-start md:justify-normal after:md:absolute after:md:-top-6 after:md:-right-[25px] after:md:block after:md:h-6 after:md:border-r-2 after:md:border-gold-2 after:md:content-['']">
-              <div className="flex flex-col gap-6">
-                <Link href="/" className="block text-lg italic underline-offset-[12px] md:text-5xl">
-                  <h1 className="text-inherit">By Bjarnar</h1>
-                </Link>
-                <p className="balanced hidden text-gold-11 md:block">
-                  A collection of writings by <br /> Will Bjarnar.
-                </p>
+        <QueryProvider>
+          <div className="isolate mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 md:flex-row md:p-6">
+            <aside className="w-full shrink-0 border-b border-gold-6 pb-2 md:max-w-56 md:border-r md:border-b-0 md:pr-6 md:pb-0">
+              <div className="sticky top-6 flex w-full items-baseline justify-between after:hidden md:flex-col md:items-start md:justify-normal after:md:absolute after:md:-top-6 after:md:-right-[25px] after:md:block after:md:h-6 after:md:border-r-2 after:md:border-gold-2 after:md:content-['']">
+                <div className="flex flex-col gap-6">
+                  <Link
+                    href="/"
+                    className="block text-lg italic underline-offset-[12px] md:text-5xl"
+                  >
+                    <h1 className="text-inherit">By Bjarnar</h1>
+                  </Link>
+                  <p className="balanced hidden text-gold-11 md:block">
+                    A collection of writings by <br /> Will Bjarnar.
+                  </p>
+                </div>
+                <hr className="my-6 hidden w-full border-t-2 border-dotted border-t-gold-6 md:block" />
+                <ul className="flex gap-2 md:flex-col md:text-base">
+                  {links?.map((link) => (
+                    <li key={link.id}>
+                      <Link {...linkProps(link)} className="text-gold-11 hover:text-green-12">
+                        {link.text}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <hr className="my-6 hidden w-full border-t-2 border-dotted border-t-gold-6 md:block" />
-              <ul className="flex gap-2 md:flex-col md:text-base">
-                {links?.map((link) => (
-                  <li key={link.id}>
-                    <Link {...linkProps(link)} className="text-gold-11 hover:text-green-12">
-                      {link.text}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </aside>
-          <main className="w-full">{children}</main>
-        </div>
-        <Footer {...footer} />
+            </aside>
+            <main className="w-full">{children}</main>
+          </div>
+          <Footer {...footer} />
+        </QueryProvider>
         <Script
           src={env.NEXT_PUBLIC_UMAMI_SRC}
           data-website-id={env.NEXT_PUBLIC_UMAMI_ID}

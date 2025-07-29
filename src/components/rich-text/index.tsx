@@ -15,6 +15,7 @@ import type {
   SerializedLexicalNodeWithParent,
 } from '@payloadcms/richtext-lexical/react';
 
+import { ArticlesTableBlock } from '@/components/blocks/articles-table';
 import { ButtonLinkBlock } from '@/components/blocks/button-link';
 import { FeaturedBlock } from '@/components/blocks/featured';
 import { FormBlock } from '@/components/blocks/form';
@@ -29,6 +30,7 @@ import { paragraphConverter } from '@/components/rich-text/paragraph-converter';
 import { textConverter } from '@/components/rich-text/text-converter';
 import { uploadConverter } from '@/components/rich-text/upload-converter';
 import type {
+  PayloadArticlesTableBlock,
   PayloadButtonLinkBlock,
   PayloadFeaturedBlock,
   PayloadFormBlock,
@@ -60,7 +62,11 @@ export type JSXConverter<
 type NodeType =
   | DefaultNodeTypes
   | SerializedBlockNode<
-      PayloadFeaturedBlock | PayloadFormBlock | PayloadButtonLinkBlock | PayloadImageBlock
+      | PayloadArticlesTableBlock
+      | PayloadButtonLinkBlock
+      | PayloadFeaturedBlock
+      | PayloadFormBlock
+      | PayloadImageBlock
     >
   | SerializedInlineBlockNode;
 
@@ -111,6 +117,7 @@ const jsxConverters: JSXConvertersFunction<NodeType> = () => ({
   link: linkConverter,
   upload: uploadConverter,
   blocks: {
+    'articles-table': ({ node }) => <ArticlesTableBlock {...node.fields} />,
     'button-link': ({ node }) => <ButtonLinkBlock {...node.fields} />,
     featured: ({ node }) => <FeaturedBlock {...node.fields} />,
     form: ({ node }) => <FormBlock {...node.fields} />,

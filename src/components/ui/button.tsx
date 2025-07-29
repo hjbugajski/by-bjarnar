@@ -113,7 +113,5 @@ export function Button({
     className: cn(buttonVariants({ variant, size, iconPosition }), className),
   };
 
-  const { renderElement } = useRender({ render, props: mergeProps(defaultProps, props) });
-
-  return renderElement();
+  return useRender({ render, props: mergeProps(defaultProps, props) });
 }
