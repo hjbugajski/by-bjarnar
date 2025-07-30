@@ -344,6 +344,13 @@ export interface PayloadClientsCollection {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
   password?: string | null;
 }
 /**
@@ -534,6 +541,13 @@ export interface PayloadUsersCollection {
   hash?: string | null;
   loginAttempts?: number | null;
   lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
   password?: string | null;
 }
 /**
@@ -688,6 +702,13 @@ export interface ClientsSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -850,6 +871,13 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -939,6 +967,112 @@ export interface FooterSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PayloadArticlesTableBlock".
+ */
+export interface PayloadArticlesTableBlock {
+  /**
+   * Configure the title column (always shows as clickable link)
+   */
+  titleColumn?: {
+    /**
+     * Allow sorting by title
+     */
+    sortable?: boolean | null;
+    /**
+     * Include title in search functionality
+     */
+    searchable?: boolean | null;
+    /**
+     * Make title column span available width
+     */
+    fullWidth?: boolean | null;
+    /**
+     * Text alignment for the column
+     */
+    alignment?: ('left' | 'center' | 'right') | null;
+    /**
+     * Text wrapping behavior
+     */
+    whitespace?: ('normal' | 'nowrap') | null;
+  };
+  /**
+   * Configure the site column (shows urlMetadata.site)
+   */
+  siteColumn?: {
+    /**
+     * Allow sorting by site
+     */
+    sortable?: boolean | null;
+    /**
+     * Include site in search functionality
+     */
+    searchable?: boolean | null;
+    /**
+     * Make site column span available width
+     */
+    fullWidth?: boolean | null;
+    /**
+     * Text alignment for the column
+     */
+    alignment?: ('left' | 'center' | 'right') | null;
+    /**
+     * Text wrapping behavior
+     */
+    whitespace?: ('normal' | 'nowrap') | null;
+  };
+  /**
+   * Configure the published date column
+   */
+  publishedColumn?: {
+    /**
+     * Allow sorting by published date
+     */
+    sortable?: boolean | null;
+    /**
+     * Include published date in search functionality
+     */
+    searchable?: boolean | null;
+    /**
+     * Make published column span available width
+     */
+    fullWidth?: boolean | null;
+    /**
+     * Text alignment for the column
+     */
+    alignment?: ('left' | 'center' | 'right') | null;
+    /**
+     * Text wrapping behavior
+     */
+    whitespace?: ('normal' | 'nowrap') | null;
+  };
+  /**
+   * Number of items to display per page
+   */
+  pageSize?: ('10' | '20' | '50' | '100') | null;
+  /**
+   * Default sorting configuration
+   */
+  defaultSort?: {
+    /**
+     * Field to sort by default
+     */
+    field?: ('title' | 'urlMetadata.site' | 'published' | 'createdAt' | 'updatedAt') | null;
+    direction?: ('asc' | 'desc') | null;
+  };
+  /**
+   * Enable search functionality
+   */
+  enableSearch?: boolean | null;
+  /**
+   * Placeholder text for the search input
+   */
+  searchPlaceholder?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'articles-table';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
