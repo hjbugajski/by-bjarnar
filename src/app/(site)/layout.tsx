@@ -7,6 +7,7 @@ import type { GlobalSlug } from 'payload';
 import { getPayload } from 'payload';
 
 import { Footer } from '@/components/footer';
+import { MobileNavigation } from '@/components/mobile-navigation';
 import { QueryProvider } from '@/components/providers/query-client-provider';
 import { env } from '@/env/client';
 import type { PayloadFooterGlobal, PayloadNavigationGlobal } from '@/payload/payload-types';
@@ -73,9 +74,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     >
       <body className="flex h-full flex-1 flex-col">
         <QueryProvider>
-          <div className="isolate mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 md:flex-row md:p-6">
+          <div className="relative isolate mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 md:flex-row md:p-6">
             <aside className="w-full shrink-0 border-b border-gold-6 pb-2 md:max-w-56 md:border-r md:border-b-0 md:pr-6 md:pb-0">
-              <div className="sticky top-6 flex w-full items-baseline justify-between after:hidden md:flex-col md:items-start md:justify-normal after:md:absolute after:md:-top-6 after:md:-right-[25px] after:md:block after:md:h-6 after:md:border-r-2 after:md:border-gold-2 after:md:content-['']">
+              <div className="sticky top-6 flex w-full items-center justify-between after:hidden md:flex-col md:items-start md:justify-normal after:md:absolute after:md:-top-6 after:md:-right-[25px] after:md:block after:md:h-6 after:md:border-r-2 after:md:border-gold-2 after:md:content-['']">
                 <div className="flex flex-col gap-6">
                   <Link
                     href="/"
@@ -87,8 +88,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                     A collection of writings by <br /> Will Bjarnar.
                   </p>
                 </div>
+                <MobileNavigation links={links} />
                 <hr className="my-6 hidden w-full border-t-2 border-dotted border-t-gold-6 md:block" />
-                <ul className="flex gap-2 md:flex-col md:text-base">
+                <ul className="hidden gap-2 md:flex md:flex-col md:text-base">
                   {links?.map((link) => (
                     <li key={link.id}>
                       <Link {...linkProps(link)} className="text-gold-11 hover:text-green-12">
