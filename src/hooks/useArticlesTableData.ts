@@ -30,10 +30,9 @@ async function fetchArticlesTableData(params: ArticlesTableParams): Promise<Arti
   }
 
   if (params.search && params.searchFields?.length) {
-    const whereQuery = {
-      or: params.searchFields.map((field) => ({ [field]: { like: params.search } })),
-    };
-    searchParams.append('where', JSON.stringify(whereQuery));
+    params.searchFields.forEach((field, index) => {
+      searchParams.append(`where[or][${index}][${field}][contains]`, params.search || '');
+    });
   }
 
   const response = await fetch(`/api/articles?${searchParams.toString()}`);
