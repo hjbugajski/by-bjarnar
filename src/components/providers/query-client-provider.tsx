@@ -15,8 +15,8 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       retry: (failureCount, error) => {
         // Don't retry on 4xx errors except 408 (timeout)
-        if (error instanceof Error && 'status' in error) {
-          const status = error.status as number;
+        if (error instanceof Response) {
+          const status = error.status;
 
           if (status >= 400 && status < 500 && status !== 408) {
             return false;
