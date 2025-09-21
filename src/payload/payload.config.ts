@@ -111,7 +111,51 @@ export default buildConfig({
     defaultFromName: env.RESEND_FROM_NAME_DEFAULT,
     apiKey: env.RESEND_API_KEY,
   }),
-  endpoints: [urlMetadataEndpoint],
+  endpoints: [
+    urlMetadataEndpoint,
+    {
+      path: '/health',
+      method: 'get',
+      handler: async (req) => {
+        try {
+          const startTime = Date.now();
+
+          await req.payload.find({
+            collection: 'users',
+            limit: 1,
+            pagination: false,
+          });
+
+          const responseTime = Date.now() - startTime;
+
+          return Response.json({
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            checks: {
+              database: {
+                status: 'healthy',
+                responseTime,
+              },
+            },
+          });
+        } catch {
+          return Response.json(
+            {
+              status: 'unhealthy',
+              timestamp: new Date().toISOString(),
+              checks: {
+                database: {
+                  status: 'unhealthy',
+                  error: 'Database connection failed',
+                },
+              },
+            },
+            { status: 503 },
+          );
+        }
+      },
+    },
+  ],
   globals: [Navigation, Footer],
   graphQL: {
     disable: true,
