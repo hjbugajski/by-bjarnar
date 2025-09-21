@@ -17,7 +17,7 @@ export function FieldControl({ className, ...props }: ComponentProps<typeof Base
     <BaseField.Control
       {...props}
       className={cn(
-        'w-full rounded-sm border border-gold-7 bg-gold-3 px-2 text-base transition hover:border-gold-8 hover:bg-gold-4 focus:outline-none focus-visible:border-gold-8 focus-visible:ring-1 focus-visible:ring-gold-7 data-[invalid]:border-tomato-7 data-[invalid]:hover:border-tomato-8 data-[invalid]:focus-visible:border-tomato-8 data-[invalid]:focus-visible:ring-tomato-7',
+        'w-full rounded-sm border border-gold-6 bg-gold-3 px-2 text-base transition hover:border-gold-8 hover:bg-gold-4 focus:outline-none focus-visible:border-gold-8 focus-visible:ring-1 focus-visible:ring-gold-7 data-[invalid]:border-tomato-7 data-[invalid]:hover:border-tomato-8 data-[invalid]:focus-visible:border-tomato-8 data-[invalid]:focus-visible:ring-tomato-7',
         className,
       )}
     />
