@@ -128,9 +128,9 @@ export function DataTable<T>({
         </div>
       ) : null}
 
-      <div className="overflow-x-auto rounded-sm border border-gold-7">
+      <div className="overflow-x-auto rounded-sm border border-gold-6">
         <table className="min-w-full">
-          <thead className="border-b border-gold-7 bg-gold-3">
+          <thead className="border-b border-gold-6 bg-gold-3">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -140,7 +140,7 @@ export function DataTable<T>({
                     <th
                       key={header.id}
                       className={cn(
-                        'px-4 py-3 text-sm font-medium text-gold-11',
+                        'px-3 py-2.5 text-xs font-medium text-gold-11',
                         header.column.getCanSort() && 'cursor-pointer select-none hover:bg-gold-4',
                         meta?.fullWidth && 'w-full min-w-0',
                         !meta?.fullWidth && 'w-auto',
@@ -156,18 +156,25 @@ export function DataTable<T>({
                       style={meta?.maxWidth ? { maxWidth: `${meta.maxWidth}px` } : undefined}
                       onClick={header.column.getToggleSortingHandler()}
                     >
-                      <div className="flex items-center justify-between gap-1">
+                      <div
+                        className={cn(
+                          'flex items-center justify-between gap-1',
+                          meta?.alignment === 'center' && 'justify-center',
+                          meta?.alignment === 'right' && 'justify-end',
+                          meta?.alignment === 'left' && 'justify-between',
+                        )}
+                      >
                         {header.isPlaceholder
                           ? null
                           : flexRender(header.column.columnDef.header, header.getContext())}
                         {header.column.getCanSort() ? (
                           <>
                             {header.column.getIsSorted() === 'asc' ? (
-                              <IconChevronUpSmall className="-mr-1" />
+                              <IconChevronUpSmall className="-mr-1 size-4" />
                             ) : header.column.getIsSorted() === 'desc' ? (
-                              <IconChevronDownSmall className="-mr-1" />
+                              <IconChevronDownSmall className="-mr-1 size-4" />
                             ) : (
-                              <IconChevronGrabber className="-mr-1 text-gold-10" />
+                              <IconChevronGrabber className="-mr-1 size-4 text-gold-10" />
                             )}
                           </>
                         ) : null}
@@ -180,8 +187,8 @@ export function DataTable<T>({
           </thead>
           <tbody className="divide-y divide-gold-6">
             {isLoading ? (
-              <tr>
-                <td colSpan={columns.length} className="px-4 py-8 text-center">
+              <tr className="hover:bg-gold-3">
+                <td colSpan={columns.length} className="px-2 py-3 text-center">
                   <div className="flex items-center justify-center gap-2">
                     <Spinner />
                     <span className="text-gold-10">Loading...</span>
@@ -197,7 +204,7 @@ export function DataTable<T>({
                       <td
                         key={cell.id}
                         className={cn(
-                          'px-4 py-3 text-sm text-gold-11',
+                          'px-3 py-2.5 text-sm text-gold-11',
                           meta?.fullWidth && 'w-full min-w-0',
                           !meta?.fullWidth && 'w-auto',
                           meta?.alignment === 'center' && 'text-center',
@@ -218,8 +225,8 @@ export function DataTable<T>({
                 </tr>
               ))
             ) : (
-              <tr>
-                <td colSpan={columns.length} className="px-4 py-8 text-center text-gold-10">
+              <tr className="hover:bg-gold-3">
+                <td colSpan={columns.length} className="px-2 py-3 text-center text-gold-10">
                   No results found.
                 </td>
               </tr>
@@ -228,11 +235,11 @@ export function DataTable<T>({
         </table>
       </div>
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 pl-2">
         <div className="text-sm text-gold-11">
           {totalCount > 0 ? startRecord : 0}&ndash;{endRecord} of {totalCount}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <span className="text-sm text-gold-11">
             Page {currentPage} of {totalPages || 1}
           </span>
