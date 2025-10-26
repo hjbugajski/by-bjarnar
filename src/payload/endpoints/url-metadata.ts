@@ -86,7 +86,10 @@ function createResponse(body: any, status: number, req: PayloadRequest): Respons
 function handleError(error: unknown, url: string, payload: Payload, req: PayloadRequest): Response {
   const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
-  payload.logger.error({ err: error, msg: `Fetch Metadata Error for ${url || 'unknown URL'}: ${errorMessage}` });
+  payload.logger.error({
+    err: error,
+    msg: `Fetch Metadata Error for ${url || 'unknown URL'}: ${errorMessage}`,
+  });
 
   return createResponse({ error: `Failed to fetch metadata: ${errorMessage}` }, 500, req);
 }
