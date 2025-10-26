@@ -33,7 +33,7 @@ const formRelationshipValidation: RelationshipFieldSingleValidation = async (
 
     return true;
   } catch (error) {
-    payload.logger.error(error);
+    payload.logger.error({ err: error });
 
     return 'Form does not exist.';
   }
@@ -68,10 +68,10 @@ const sendFormSubmissionEmail: CollectionAfterOperationHook<'form-submissions'> 
       });
 
       if (error) {
-        payload.logger.error(error);
+        payload.logger.error({ err: error });
       }
     } catch (error) {
-      payload.logger.error(error);
+      payload.logger.error({ err: error });
     }
   }
 
