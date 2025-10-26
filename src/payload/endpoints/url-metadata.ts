@@ -71,7 +71,7 @@ async function fetchMetadata(url: string, payload: Payload): Promise<UrlMetadata
       site,
     };
   } catch (error) {
-    payload.logger.error(`Error fetching metadata for ${url}:`, error);
+    payload.logger.error({ err: error, msg: `Error fetching metadata for ${url}` });
     throw error;
   }
 }
@@ -86,7 +86,10 @@ function createResponse(body: any, status: number, req: PayloadRequest): Respons
 function handleError(error: unknown, url: string, payload: Payload, req: PayloadRequest): Response {
   const errorMessage = error instanceof Error ? error.message : 'Unknown error';
 
-  payload.logger.error(`Fetch Metadata Error for ${url || 'unknown URL'}: ${errorMessage}`, error);
+  payload.logger.error({
+    err: error,
+    msg: `Fetch Metadata Error for ${url || 'unknown URL'}: ${errorMessage}`,
+  });
 
   return createResponse({ error: `Failed to fetch metadata: ${errorMessage}` }, 500, req);
 }
