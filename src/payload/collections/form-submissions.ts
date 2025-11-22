@@ -65,6 +65,9 @@ const sendFormSubmissionEmail: CollectionAfterOperationHook<'form-submissions'> 
         to: env.RESEND_TO_ADDRESS_DEFAULT,
         subject: `New ${form.title} Submission`,
         react: FormSubmissionEmailTemplate({ data: result.data, form }),
+        headers: {
+          'X-Entity-Ref-ID': nanoid(32),
+        },
       });
 
       if (error) {
