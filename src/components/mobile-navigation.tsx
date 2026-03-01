@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Dialog } from '@base-ui-components/react/dialog';
+import { Dialog } from '@base-ui/react/dialog';
 import Link from 'next/link';
 
 import { Button } from '@/components/ui/button';
@@ -29,8 +29,8 @@ export function MobileNavigation({ links }: MobileNavigationProps) {
         }
       />
       <Dialog.Portal>
-        <Dialog.Backdrop className="fixed inset-x-0 top-15 bottom-0 bg-gold-2/50 backdrop-blur-lg transition-all duration-200 data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
-        <Dialog.Popup className="fixed inset-x-4 top-20 z-50 overflow-y-auto transition-all duration-200 data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[starting-style]:scale-95 data-[starting-style]:opacity-0">
+        <Dialog.Backdrop className="fixed inset-x-0 top-15 bottom-0 bg-gold-2/50 backdrop-blur-lg transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0" />
+        <Dialog.Popup className="fixed inset-x-4 top-20 z-50 overflow-y-auto transition-all duration-200 data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
           <ul className="flex flex-col gap-4">
             {links?.map((link) => (
               <li key={link.id}>

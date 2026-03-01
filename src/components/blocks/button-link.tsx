@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { cva } from 'class-variance-authority';
 
 import { PayloadButtonLink } from '@/components/ui/payload-button-link';
@@ -16,8 +15,8 @@ const buttonLinkVariants = cva('my-6 flex first:mt-0 last:mb-0', {
 
 export function ButtonLinkBlock({
   alignment,
-  blockName,
-  blockType,
+  blockName: _blockName,
+  blockType: _blockType,
   id,
   ...props
 }: PayloadButtonLinkBlock) {

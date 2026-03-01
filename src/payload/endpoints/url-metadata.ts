@@ -76,7 +76,7 @@ async function fetchMetadata(url: string, payload: Payload): Promise<UrlMetadata
   }
 }
 
-function createResponse(body: any, status: number, req: PayloadRequest): Response {
+function createResponse(body: unknown, status: number, req: PayloadRequest): Response {
   return Response.json(body, {
     status,
     headers: headersWithCors({ headers: new Headers(), req }),
@@ -107,9 +107,7 @@ export const urlMetadataEndpoint: Endpoint = {
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const body = req.json ? await req.json() : {};
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { url } = body;
 
       if (!url || typeof url !== 'string') {

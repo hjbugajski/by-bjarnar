@@ -76,12 +76,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <QueryProvider>
           <div className="relative isolate mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 p-4 md:flex-row md:p-6">
             <aside className="w-full shrink-0 border-b border-gold-6 pb-2 md:max-w-56 md:border-r md:border-b-0 md:pr-6 md:pb-0">
-              <div className="sticky top-6 flex w-full items-center justify-between after:hidden md:flex-col md:items-start md:justify-normal after:md:absolute after:md:-top-6 after:md:-right-[25px] after:md:block after:md:h-6 after:md:border-r-2 after:md:border-gold-2 after:md:content-['']">
+              <div className="sticky top-6 flex w-full items-center justify-between after:hidden md:flex-col md:items-start md:justify-normal after:md:absolute after:md:-top-6 after:md:-right-6.25 after:md:block after:md:h-6 after:md:border-r-2 after:md:border-gold-2 after:md:content-['']">
                 <div className="flex flex-col gap-6">
-                  <Link
-                    href="/"
-                    className="block text-lg italic underline-offset-[12px] md:text-5xl"
-                  >
+                  <Link href="/" className="block text-lg italic underline-offset-12 md:text-5xl">
                     <h1 className="text-inherit">By Bjarnar</h1>
                   </Link>
                   <p className="balanced hidden text-gold-11 md:block">

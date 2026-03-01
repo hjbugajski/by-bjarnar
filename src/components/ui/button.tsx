@@ -1,13 +1,13 @@
 'use client';
 
-import { mergeProps } from '@base-ui-components/react/merge-props';
-import { useRender } from '@base-ui-components/react/use-render';
+import { mergeProps } from '@base-ui/react/merge-props';
+import { useRender } from '@base-ui/react/use-render';
 import { type VariantProps, cva } from 'class-variance-authority';
 
 import { cn } from '@/utils/cn';
 
 const buttonVariants = cva(
-  'inline-flex shrink-0 items-center justify-center rounded-sm font-medium no-underline transition disabled:cursor-not-allowed disabled:bg-gold-3 disabled:text-gold-8',
+  'inline-flex shrink-0 items-center justify-center rounded-sm font-medium no-underline transition focus-visible:ring-2 focus-visible:ring-gold-7 focus-visible:ring-offset-2 focus-visible:ring-offset-gold-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:bg-gold-3 disabled:text-gold-8',
   {
     variants: {
       variant: {
@@ -104,7 +104,7 @@ type Props = useRender.ComponentProps<'button'> & VariantProps<typeof buttonVari
 export function Button({
   className,
   iconPosition,
-  render = <button />,
+  render = <button type="button" />,
   size,
   variant,
   ...props
@@ -113,5 +113,5 @@ export function Button({
     className: cn(buttonVariants({ variant, size, iconPosition }), className),
   };
 
-  return useRender({ render, props: mergeProps(defaultProps, props) });
+  return useRender({ defaultTagName: 'button', render, props: mergeProps(defaultProps, props) });
 }

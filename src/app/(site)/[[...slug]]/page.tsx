@@ -5,10 +5,11 @@ import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
 
+import config from '@payload-config';
+
 import { metadata } from '@/app/(site)/layout';
 import { LivePreviewListener } from '@/components/live-preview-listener';
 import { RichText } from '@/components/rich-text';
-import config from '@payload-config';
 
 interface Props {
   params: Promise<{ slug: string[] }>;
@@ -61,7 +62,7 @@ export async function generateStaticParams() {
   }
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const page = await fetchCachedPage({ slug });
 

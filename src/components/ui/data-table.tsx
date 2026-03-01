@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 
 import { useDebouncedValue } from '@tanstack/react-pacer';
 import {
-  type ColumnDef,
   type PaginationState,
   type SortingState,
+  type TableOptions,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -41,7 +41,7 @@ declare module '@tanstack/react-table' {
 
 export interface DataTableProps<T> {
   data: T[];
-  columns: ColumnDef<T, any>[];
+  columns: TableOptions<T>['columns'];
   totalCount: number;
   isLoading?: boolean;
   enableSearch?: boolean;
@@ -168,15 +168,13 @@ export function DataTable<T>({
                           ? null
                           : flexRender(header.column.columnDef.header, header.getContext())}
                         {header.column.getCanSort() ? (
-                          <>
-                            {header.column.getIsSorted() === 'asc' ? (
-                              <IconChevronUpSmall className="-mr-1 size-4" />
-                            ) : header.column.getIsSorted() === 'desc' ? (
-                              <IconChevronDownSmall className="-mr-1 size-4" />
-                            ) : (
-                              <IconChevronGrabber className="-mr-1 size-4 text-gold-10" />
-                            )}
-                          </>
+                          header.column.getIsSorted() === 'asc' ? (
+                            <IconChevronUpSmall className="-mr-1 size-4" />
+                          ) : header.column.getIsSorted() === 'desc' ? (
+                            <IconChevronDownSmall className="-mr-1 size-4" />
+                          ) : (
+                            <IconChevronGrabber className="-mr-1 size-4 text-gold-10" />
+                          )
                         ) : null}
                       </div>
                     </th>

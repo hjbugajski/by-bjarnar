@@ -1,10 +1,14 @@
 import sharp from 'sharp';
 
-export async function createDataUrl(url: string, mimeType?: string | null): Promise<string> {
-  const image = await fetch(url);
-  const imageBuffer = await image.arrayBuffer();
-  const sharpBuffer = await sharp(imageBuffer).resize(50).toBuffer();
-  const dataUrl = `data:${mimeType || 'image/png'};base64,${sharpBuffer.toString('base64')}`;
+export async function createDataUrl(
+  data: Buffer,
+  mimeType?: string | null,
+): Promise<string | null> {
+  try {
+    const sharpBuffer = await sharp(data).resize(50).toBuffer();
 
-  return dataUrl;
+    return `data:${mimeType || 'image/png'};base64,${sharpBuffer.toString('base64')}`;
+  } catch {
+    return null;
+  }
 }
