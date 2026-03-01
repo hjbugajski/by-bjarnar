@@ -104,7 +104,8 @@ type Props = useRender.ComponentProps<'button'> & VariantProps<typeof buttonVari
 export function Button({
   className,
   iconPosition,
-  render = <button type="button" />,
+  // oxlint-disable-next-line react/button-has-type
+  render = <button />,
   size,
   variant,
   ...props
