@@ -9,13 +9,17 @@ const addDataUrl: CollectionAfterChangeHook<PayloadImagesCollection> = async ({
   doc,
   req,
 }) => {
-  if (!doc.url || context?.ignoreAddDataUrl) {
+  if (!req.file?.data || context?.ignoreAddDataUrl) {
     return doc;
   }
 
-  const dataUrl = await createDataUrl(doc.url, doc.mimeType);
+  const dataUrl = await createDataUrl(req.file.data, doc.mimeType);
 
-  return req.payload.update({
+  if (!dataUrl) {
+    return doc;
+  }
+
+  return await req.payload.update({
     collection: 'images',
     id: doc.id,
     data: {
@@ -24,7 +28,10 @@ const addDataUrl: CollectionAfterChangeHook<PayloadImagesCollection> = async ({
     context: {
       ignoreAddDataUrl: true,
     },
-    req,
+    req: {
+      transactionID: req.transactionID,
+      user: req.user,
+    },
   });
 };
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from 'next/image';
 
 import type { PayloadImagesCollection } from '@/payload/payload-types';
@@ -6,25 +5,23 @@ import { cn } from '@/utils/cn';
 
 export type PayloadImageProps = PayloadImagesCollection & {
   className?: string;
-  outerClassName?: string;
 };
 
 export function PayloadImage({
   alt,
   className,
-  createdAt,
+  createdAt: _createdAt,
   dataUrl,
   displayOriginal,
-  filename,
-  filesize,
-  focalX,
-  focalY,
+  filename: _filename,
+  filesize: _filesize,
+  focalX: _focalX,
+  focalY: _focalY,
   height: propsHeight,
-  mimeType,
-  outerClassName,
+  mimeType: _mimeType,
   sizes,
-  thumbnailURL,
-  updatedAt,
+  thumbnailURL: _thumbnailURL,
+  updatedAt: _updatedAt,
   url,
   width: propsWidth,
   ...props

@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 
-import type { ColumnDef } from '@tanstack/react-table';
 import { createColumnHelper } from '@tanstack/react-table';
 import Link from 'next/link';
 
@@ -11,6 +10,8 @@ import { useArticlesTableData } from '@/hooks/useArticlesTableData';
 import type { PayloadArticlesCollection, PayloadArticlesTableBlock } from '@/payload/payload-types';
 import { articleLinkProps } from '@/utils/article';
 import { formatDate } from '@/utils/format';
+
+const columnHelper = createColumnHelper<PayloadArticlesCollection>();
 
 declare module '@tanstack/react-table' {
   // @ts-expect-error – Extend the ColumnMeta interface to include custom properties
@@ -86,12 +87,8 @@ export function ArticlesTableBlock({
   });
   const data = queryData?.docs || [];
   const totalCount = queryData?.totalDocs || 0;
-  const columnHelper = createColumnHelper<PayloadArticlesCollection>();
-
-  const columns = useMemo(() => {
-    const cols: ColumnDef<PayloadArticlesCollection, any>[] = [];
-
-    cols.push(
+  const columns = useMemo(
+    () => [
       columnHelper.accessor('title', {
         header: 'Title',
         enableSorting: !!titleColumn?.sortable,
@@ -104,9 +101,6 @@ export function ArticlesTableBlock({
           <Link {...articleLinkProps(original)}>{getValue()}</Link>
         ),
       }),
-    );
-
-    cols.push(
       columnHelper.accessor('urlMetadata.site', {
         header: 'Site',
         enableSorting: !!siteColumn?.sortable,
@@ -116,14 +110,11 @@ export function ArticlesTableBlock({
           whitespace: siteColumn?.whitespace || 'normal',
         },
         cell: ({ getValue }) => {
-          const site = getValue() as string | null | undefined;
+          const site = getValue();
 
           return site ? <span>{site}</span> : <span className="text-gold-8">—</span>;
         },
       }),
-    );
-
-    cols.push(
       columnHelper.accessor('published', {
         header: 'Published',
         enableSorting: !!publishedColumn?.sortable,
@@ -133,7 +124,7 @@ export function ArticlesTableBlock({
           whitespace: publishedColumn?.whitespace || 'normal',
         },
         cell: ({ getValue }) => {
-          const published = getValue() as string | null | undefined;
+          const published = getValue();
 
           return published ? (
             <time dateTime={published} className="tabular-nums">
@@ -144,10 +135,9 @@ export function ArticlesTableBlock({
           );
         },
       }),
-    );
-
-    return cols;
-  }, [titleColumn, siteColumn, publishedColumn]);
+    ],
+    [titleColumn, siteColumn, publishedColumn],
+  );
 
   const handlePaginationChange = (pagination: { pageIndex: number; pageSize: number }) => {
     setTableState((prev) => ({ ...prev, pagination }));

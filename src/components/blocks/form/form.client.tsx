@@ -59,7 +59,7 @@ export const FormClient = ({
           case 'text':
           case 'textarea': {
             if (field.required) {
-              fieldSchema = z.string().min(1, { message: REQUIRED_MESSAGE });
+              fieldSchema = z.string().min(1, { error: REQUIRED_MESSAGE });
             } else {
               fieldSchema = z.string().optional();
             }
@@ -71,11 +71,11 @@ export const FormClient = ({
             const message = 'Must be a valid email address';
 
             if (field.required) {
-              fieldSchema = z.string().min(1, { message: REQUIRED_MESSAGE }).refine(validator, {
-                message,
+              fieldSchema = z.string().min(1, { error: REQUIRED_MESSAGE }).refine(validator, {
+                error: message,
               });
             } else {
-              fieldSchema = z.string().optional().refine(validator, { message });
+              fieldSchema = z.string().optional().refine(validator, { error: message });
             }
 
             break;
@@ -87,10 +87,10 @@ export const FormClient = ({
             if (field.required) {
               fieldSchema = z
                 .string()
-                .min(1, { message: REQUIRED_MESSAGE })
-                .refine(validator, { message });
+                .min(1, { error: REQUIRED_MESSAGE })
+                .refine(validator, { error: message });
             } else {
-              fieldSchema = z.string().optional().refine(validator, { message });
+              fieldSchema = z.string().optional().refine(validator, { error: message });
             }
 
             break;
@@ -106,6 +106,7 @@ export const FormClient = ({
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormState('pending');
+    setFormErrors({});
 
     const formData = new FormData(event.currentTarget);
     const values: Record<PropertyKey, string> = {};
@@ -117,7 +118,7 @@ export const FormClient = ({
     });
 
     try {
-      const parsedValues: Record<PropertyKey, string> = formSchema.parse(values);
+      const parsedValues = formSchema.parse(values) as Record<PropertyKey, string>;
       const formattedValues = fields.map((field) => ({
         label: field.label,
         name: field.name,
@@ -130,7 +131,7 @@ export const FormClient = ({
       setFormMessage(confirmationMessage);
     } catch (e) {
       if (e instanceof z.ZodError) {
-        setFormErrors(e.flatten().fieldErrors);
+        setFormErrors(z.flattenError(e).fieldErrors);
         setFormState('idle');
       } else {
         setFormState('error');
@@ -148,6 +149,7 @@ export const FormClient = ({
         >
           <p>{formMessage}</p>
           <button
+            type="button"
             data-form-state={formState}
             onClick={() => setFormMessage(null)}
             className="absolute top-2 right-1.5 flex shrink-0 items-center justify-center rounded-xs p-1 transition hover:bg-gold-4 data-[form-state=error]:hover:bg-tomato-4 data-[form-state=success]:hover:bg-green-4"
@@ -157,13 +159,7 @@ export const FormClient = ({
           </button>
         </div>
       ) : null}
-      <Form
-        ref={formRef}
-        id={id}
-        onSubmit={(e) => void onSubmit(e)}
-        onClearErrors={setFormErrors}
-        errors={formErrors}
-      >
+      <Form ref={formRef} id={id} onSubmit={(e) => void onSubmit(e)} errors={formErrors}>
         {fields.map((field) => (
           <Field
             key={field.id || field.name}

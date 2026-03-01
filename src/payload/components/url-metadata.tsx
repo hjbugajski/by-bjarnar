@@ -39,52 +39,50 @@ export const UrlMetadata: TextFieldClientComponent = ({ field, path }: TextField
         body: JSON.stringify({ url: value }),
       });
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const data = await response.json();
+      const data: UrlMetadataResponse & { error?: string } = await response.json();
 
       if (!response.ok) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        setError(data.error || 'Failed to fetch metadata');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-        throw new Error(data.error || 'Failed to fetch metadata');
+        const message = data.error || 'Failed to fetch metadata';
+
+        setError(message);
+
+        throw new Error(message);
       }
 
-      const metadata = data as UrlMetadataResponse;
-
-      if (metadata.title) {
+      if (data.title) {
         dispatchFields({
           type: 'UPDATE',
           path: 'urlMetadata.title',
-          value: metadata.title,
+          value: data.title,
         });
         setModified(true);
       }
 
-      if (metadata.description) {
+      if (data.description) {
         dispatchFields({
           type: 'UPDATE',
           path: 'urlMetadata.description',
-          value: metadata.description,
+          value: data.description,
         });
         setModified(true);
       }
 
-      if (metadata.image) {
+      if (data.image) {
         dispatchFields({
           type: 'UPDATE',
           path: 'urlMetadata.image',
-          value: metadata.image,
+          value: data.image,
         });
         setModified(true);
       }
 
-      if (metadata.published) {
+      if (data.published) {
         dispatchFields({
           type: 'UPDATE',
           path: 'urlMetadata.published',
-          value: metadata.published,
+          value: data.published,
         });
-        const publishedDate = new Date(metadata.published);
+        const publishedDate = new Date(data.published);
 
         if (publishedDate.toString() !== 'Invalid Date') {
           dispatchFields({
@@ -97,11 +95,11 @@ export const UrlMetadata: TextFieldClientComponent = ({ field, path }: TextField
         setModified(true);
       }
 
-      if (metadata.site) {
+      if (data.site) {
         dispatchFields({
           type: 'UPDATE',
           path: 'urlMetadata.site',
-          value: metadata.site,
+          value: data.site,
         });
         setModified(true);
       }
@@ -111,12 +109,15 @@ export const UrlMetadata: TextFieldClientComponent = ({ field, path }: TextField
     } finally {
       setLoading(false);
     }
-  }, [value, dispatchFields]);
+  }, [value, dispatchFields, setModified]);
 
-  const handleOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-    setModified(true);
-  }, []);
+  const handleOnChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setValue(e.target.value);
+      setModified(true);
+    },
+    [setValue, setModified],
+  );
 
   return (
     <div className="field-with-button">
