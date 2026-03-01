@@ -84,7 +84,6 @@ export default buildConfig({
     },
     migrationDir: path.join(dirname, 'migrations'),
     idType: 'uuid',
-    blocksAsJSON: true,
   }),
   editor: lexicalEditor({
     features: () => [
