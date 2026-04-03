@@ -14,11 +14,11 @@ import type {
   JSXConvertersFunction,
   SerializedLexicalNodeWithParent,
 } from '@payloadcms/richtext-lexical/react';
+import dynamic from 'next/dynamic';
 
 import { ArticlesTableBlock } from '@/components/blocks/articles-table';
 import { ButtonLinkBlock } from '@/components/blocks/button-link';
 import { FeaturedBlock } from '@/components/blocks/featured';
-import { FormBlock } from '@/components/blocks/form';
 import { ImageBlock } from '@/components/blocks/image';
 import { blockQuoteConverter } from '@/components/rich-text/block-quote-converter';
 import { headingConverter } from '@/components/rich-text/heading-converter';
@@ -37,6 +37,8 @@ import type {
   PayloadImageBlock,
 } from '@/payload/payload-types';
 import { cn } from '@/utils/cn';
+
+const FormBlock = dynamic(() => import('@/components/blocks/form').then((mod) => mod.FormBlock));
 
 export type JSXConverter<
   T extends {
