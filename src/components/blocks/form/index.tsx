@@ -1,8 +1,13 @@
-import { FormClient } from '@/components/blocks/form/form.client';
-import { RichText } from '@/components/rich-text';
-import type { PayloadFormBlock } from '@/payload/payload-types';
+import type { ComponentType } from 'react';
 
-export function FormBlock({ form }: PayloadFormBlock) {
+import { FormClient } from '@/components/blocks/form/form.client';
+import type { PayloadFormBlock, PayloadFormsCollection } from '@/payload/payload-types';
+
+interface FormBlockProps extends PayloadFormBlock {
+  RichText: ComponentType<{ data?: PayloadFormsCollection['description'] }>;
+}
+
+export function FormBlock({ form, RichText }: FormBlockProps) {
   if (!form || typeof form === 'string') {
     // TODO: make alert component
     return <p>There was an error rendering the form. Please reload the page and try again.</p>;
@@ -16,7 +21,7 @@ export function FormBlock({ form }: PayloadFormBlock) {
           <RichText data={form.description} />
         </>
       )}
-      <FormClient {...form} />
+      <FormClient {...form} RichText={RichText} />
     </section>
   );
 }

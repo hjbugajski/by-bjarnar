@@ -1,13 +1,13 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import type { ComponentType } from 'react';
 
 import isEmail from 'validator/lib/isEmail';
 import isMobilePhone from 'validator/lib/isMobilePhone';
 import { z } from 'zod';
 
 import { submitForm } from '@/components/blocks/form/form.action';
-import { RichText } from '@/components/rich-text';
 import { Button } from '@/components/ui/button';
 import {
   Field,
@@ -38,12 +38,17 @@ function renderFieldControl(field: PayloadFormsCollection['fields'][number]) {
   }
 }
 
+interface FormClientProps extends PayloadFormsCollection {
+  RichText: ComponentType<{ data?: PayloadFormsCollection['fields'][number]['description'] }>;
+}
+
 export const FormClient = ({
   confirmationMessage,
   fields,
   id,
+  RichText,
   submitButtonLabel,
-}: PayloadFormsCollection) => {
+}: FormClientProps) => {
   const formRef = useRef<HTMLFormElement>(null);
 
   const [formErrors, setFormErrors] = useState({});
