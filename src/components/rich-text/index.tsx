@@ -120,7 +120,7 @@ const jsxConverters: JSXConvertersFunction<NodeType> = () => ({
     'articles-table': ({ node }) => <ArticlesTableBlock {...node.fields} />,
     'button-link': ({ node }) => <ButtonLinkBlock {...node.fields} />,
     featured: ({ node }) => <FeaturedBlock {...node.fields} />,
-    form: ({ node }) => <FormBlock {...node.fields} />,
+    form: ({ node }) => <FormBlock {...node.fields} RichText={RichText} />,
     image: ({ node }) => <ImageBlock {...node.fields} />,
   },
 });
