@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import type { ComponentType } from 'react';
+import type { ReactNode } from 'react';
 
 import isEmail from 'validator/lib/isEmail';
 import isMobilePhone from 'validator/lib/isMobilePhone';
@@ -39,14 +39,14 @@ function renderFieldControl(field: PayloadFormsCollection['fields'][number]) {
 }
 
 interface FormClientProps extends PayloadFormsCollection {
-  RichText: ComponentType<{ data?: PayloadFormsCollection['fields'][number]['description'] }>;
+  fieldDescriptions: Record<string, ReactNode>;
 }
 
 export const FormClient = ({
   confirmationMessage,
+  fieldDescriptions,
   fields,
   id,
-  RichText,
   submitButtonLabel,
 }: FormClientProps) => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -177,10 +177,8 @@ export const FormClient = ({
               {field.required ? null : ' (optional)'}
             </FieldLabel>
             <FieldControl render={renderFieldControl(field)} />
-            {field.description ? (
-              <FieldDescription>
-                <RichText data={field.description} />
-              </FieldDescription>
+            {fieldDescriptions[field.name] ? (
+              <FieldDescription>{fieldDescriptions[field.name]}</FieldDescription>
             ) : null}
             <FieldError />
           </Field>

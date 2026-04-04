@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 import { FormClient } from '@/components/blocks/form/form.client';
 import type { PayloadFormBlock, PayloadFormsCollection } from '@/payload/payload-types';
@@ -13,6 +13,14 @@ export function FormBlock({ form, RichText }: FormBlockProps) {
     return <p>There was an error rendering the form. Please reload the page and try again.</p>;
   }
 
+  const fieldDescriptions: Record<string, ReactNode> = {};
+
+  for (const field of form.fields) {
+    if (field.description) {
+      fieldDescriptions[field.name] = <RichText data={field.description} />;
+    }
+  }
+
   return (
     <section className="mx-auto my-10 w-full max-w-3xl first:mt-0 last:mb-0">
       {form.formOnly ? null : (
@@ -21,7 +29,7 @@ export function FormBlock({ form, RichText }: FormBlockProps) {
           <RichText data={form.description} />
         </>
       )}
-      <FormClient {...form} RichText={RichText} />
+      <FormClient {...form} fieldDescriptions={fieldDescriptions} />
     </section>
   );
 }
