@@ -25,6 +25,10 @@ import type { PayloadFormsCollection } from '@/payload/payload-types';
 
 const REQUIRED_MESSAGE = 'Field is required';
 
+const isValidEmail = (arg: string | undefined) => (arg ? isEmail(arg) : true);
+
+const isValidPhone = (arg: string | undefined) => (arg ? isMobilePhone(arg) : true);
+
 function renderFieldControl(field: PayloadFormsCollection['fields'][number]) {
   switch (field.blockType) {
     case 'textarea':
@@ -72,30 +76,28 @@ export const FormClient = ({
             break;
           }
           case 'email': {
-            const validator = (arg: string | undefined) => (arg ? isEmail(arg) : true);
             const message = 'Must be a valid email address';
 
             if (field.required) {
-              fieldSchema = z.string().min(1, { error: REQUIRED_MESSAGE }).refine(validator, {
+              fieldSchema = z.string().min(1, { error: REQUIRED_MESSAGE }).refine(isValidEmail, {
                 error: message,
               });
             } else {
-              fieldSchema = z.string().optional().refine(validator, { error: message });
+              fieldSchema = z.string().optional().refine(isValidEmail, { error: message });
             }
 
             break;
           }
           case 'phoneNumber': {
-            const validator = (arg: string | undefined) => (arg ? isMobilePhone(arg) : true);
             const message = 'Must be a valid phone number';
 
             if (field.required) {
               fieldSchema = z
                 .string()
                 .min(1, { error: REQUIRED_MESSAGE })
-                .refine(validator, { error: message });
+                .refine(isValidPhone, { error: message });
             } else {
-              fieldSchema = z.string().optional().refine(validator, { error: message });
+              fieldSchema = z.string().optional().refine(isValidPhone, { error: message });
             }
 
             break;
