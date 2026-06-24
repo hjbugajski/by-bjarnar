@@ -3,7 +3,6 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
-    DOMAIN: z.string().min(1),
     PAYLOAD_ADMIN_PASSWORD: z.string().min(1),
     PAYLOAD_ADMIN_USER: z.string().min(1),
     PAYLOAD_SECRET: z.string().min(1),
@@ -16,12 +15,6 @@ export const env = createEnv({
     RESEND_FROM_ADDRESS_DEFAULT: z.string().min(1),
     RESEND_FROM_NAME_DEFAULT: z.string().min(1),
     RESEND_TO_ADDRESS_DEFAULT: z.string().min(1),
-    SERVER_URL: z
-      .string()
-      .min(1)
-      .transform((url) =>
-        process.env.VERCEL_ENV === 'preview' ? `https://${process.env.VERCEL_URL}` : url,
-      ),
   },
   experimental__runtimeEnv: process.env,
 });

@@ -2,13 +2,13 @@ import type { MetadataRoute } from 'next';
 import { unstable_cache } from 'next/cache';
 import { getPayload } from 'payload';
 
-import { env } from '@/env/client';
 import config from '@/payload/payload.config';
+import { getServerSideUrl } from '@/payload/utils/get-server-side-url';
 
 const getPagesSitemap = unstable_cache(
   async (): Promise<MetadataRoute.Sitemap> => {
     const payload = await getPayload({ config });
-    const siteUrl = env.NEXT_PUBLIC_SERVER_URL;
+    const siteUrl = getServerSideUrl();
 
     const results = await payload.find({
       collection: 'pages',
@@ -37,6 +37,10 @@ const getPagesSitemap = unstable_cache(
 );
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  if (process.env.VERCEL_TARGET_ENV !== 'production') {
+    return [];
+  }
+
   const sitemap = await getPagesSitemap();
 
   return sitemap;
