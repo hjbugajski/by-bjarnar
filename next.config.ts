@@ -3,12 +3,14 @@ import { env } from 'node:process';
 import { withPayload } from '@payloadcms/next/withPayload';
 import type { NextConfig } from 'next';
 
-const domain = env.VERCEL_TARGET_ENV === 'preview' ? env.VERCEL_BRANCH_URL : env.NEXT_PUBLIC_DOMAIN;
+const isPreviewVercel = env.VERCEL_TARGET_ENV === 'preview';
 const isProductionNode = env.NODE_ENV === 'production';
 const isProductionVercel = env.VERCEL_TARGET_ENV === 'production';
+const domain = isPreviewVercel ? env.VERCEL_BRANCH_URL : env.NEXT_PUBLIC_DOMAIN;
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: isPreviewVercel,
     dangerouslyAllowLocalIP: !isProductionNode,
     remotePatterns: [
       {
