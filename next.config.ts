@@ -21,7 +21,7 @@ const nextConfig: NextConfig = {
     ],
   },
   turbopack: {},
-  headers: async () => [
+  headers: () => [
     {
       source: '/(.*)',
       headers: [
