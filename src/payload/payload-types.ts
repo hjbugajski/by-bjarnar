@@ -40,8 +40,7 @@ export type PayloadRelField = ('noopener' | 'noreferrer' | 'nofollow')[] | null;
  * via the `definition` "PayloadIconField".
  */
 export type PayloadIconField =
-  | ('arrowRight' | 'bluesky' | 'close' | 'fiverr' | 'instagram' | 'letterboxd' | 'tiktok' | 'x')
-  | null;
+  ('arrowRight' | 'bluesky' | 'close' | 'fiverr' | 'instagram' | 'letterboxd' | 'tiktok' | 'x') | null;
 /**
  * Supported timezones in IANA format.
  *
