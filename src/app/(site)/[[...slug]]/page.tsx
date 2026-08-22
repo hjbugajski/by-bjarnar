@@ -23,7 +23,7 @@ function pageTitle(title: string | undefined, metadata: Metadata) {
 }
 
 function pagePath(slug: string[] | undefined) {
-  return `/${(slug || ['home']).join('/')}`;
+  return `/${(slug?.length ? slug : ['home']).join('/')}`;
 }
 
 async function findPage(path: string, draft: boolean) {
@@ -67,9 +67,12 @@ export async function generateStaticParams() {
       },
     });
 
-    return pages.docs.map(({ path }) => ({ slug: path?.split('/')?.slice(1) || undefined }));
+    // The home page is served from `/`, so it prerenders with no slug segments.
+    return pages.docs.map(({ path }) =>
+      !path || path === '/home' ? { slug: [] } : { slug: path.split('/').slice(1) },
+    );
   } catch {
-    return [{ slug: undefined }];
+    return [{ slug: [] }];
   }
 }
 
