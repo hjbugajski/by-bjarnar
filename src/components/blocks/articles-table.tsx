@@ -5,27 +5,13 @@ import { useMemo, useState } from 'react';
 import { createColumnHelper } from '@tanstack/react-table';
 import Link from 'next/link';
 
-import { DataTable } from '@/components/ui/data-table';
+import { DataTable, type DataTableFeatures } from '@/components/ui/data-table';
 import { useArticlesTableData } from '@/hooks/useArticlesTableData';
 import type { PayloadArticlesCollection, PayloadArticlesTableBlock } from '@/payload/payload-types';
 import { articleLinkProps } from '@/utils/article';
 import { formatDate } from '@/utils/format';
 
-const columnHelper = createColumnHelper<PayloadArticlesCollection>();
-
-declare module '@tanstack/react-table' {
-  // @ts-expect-error – Extend the ColumnMeta interface to include custom properties
-  interface ColumnMeta {
-    /** Text alignment for the column */
-    alignment?: 'left' | 'center' | 'right';
-    /** Whether the cell should fill the available width */
-    fullWidth?: boolean;
-    /** Maximum width for the column */
-    maxWidth?: number;
-    /** Whether the cell should wrap text */
-    whitespace?: 'normal' | 'nowrap';
-  }
-}
+const columnHelper = createColumnHelper<DataTableFeatures, PayloadArticlesCollection>();
 
 interface TableState {
   pagination: { pageIndex: number; pageSize: number };
@@ -88,54 +74,55 @@ export function ArticlesTableBlock({
   const data = queryData?.docs || [];
   const totalCount = queryData?.totalDocs || 0;
   const columns = useMemo(
-    () => [
-      columnHelper.accessor('title', {
-        header: 'Title',
-        enableSorting: !!titleColumn?.sortable,
-        meta: {
-          fullWidth: !!titleColumn?.fullWidth,
-          alignment: titleColumn?.alignment || 'left',
-          whitespace: titleColumn?.whitespace || 'normal',
-        },
-        cell: ({ getValue, row: { original } }) => (
-          <Link {...articleLinkProps(original)}>{getValue()}</Link>
-        ),
-      }),
-      columnHelper.accessor('urlMetadata.site', {
-        header: 'Site',
-        enableSorting: !!siteColumn?.sortable,
-        meta: {
-          fullWidth: !!siteColumn?.fullWidth,
-          alignment: siteColumn?.alignment || 'left',
-          whitespace: siteColumn?.whitespace || 'normal',
-        },
-        cell: ({ getValue }) => {
-          const site = getValue();
+    () =>
+      columnHelper.columns([
+        columnHelper.accessor('title', {
+          header: 'Title',
+          enableSorting: !!titleColumn?.sortable,
+          meta: {
+            fullWidth: !!titleColumn?.fullWidth,
+            alignment: titleColumn?.alignment || 'left',
+            whitespace: titleColumn?.whitespace || 'normal',
+          },
+          cell: ({ getValue, row: { original } }) => (
+            <Link {...articleLinkProps(original)}>{getValue()}</Link>
+          ),
+        }),
+        columnHelper.accessor('urlMetadata.site', {
+          header: 'Site',
+          enableSorting: !!siteColumn?.sortable,
+          meta: {
+            fullWidth: !!siteColumn?.fullWidth,
+            alignment: siteColumn?.alignment || 'left',
+            whitespace: siteColumn?.whitespace || 'normal',
+          },
+          cell: ({ getValue }) => {
+            const site = getValue();
 
-          return site ? <span>{site}</span> : <span className="text-gold-8">—</span>;
-        },
-      }),
-      columnHelper.accessor('published', {
-        header: 'Published',
-        enableSorting: !!publishedColumn?.sortable,
-        meta: {
-          fullWidth: !!publishedColumn?.fullWidth,
-          alignment: publishedColumn?.alignment || 'left',
-          whitespace: publishedColumn?.whitespace || 'normal',
-        },
-        cell: ({ getValue }) => {
-          const published = getValue();
+            return site ? <span>{site}</span> : <span className="text-gold-8">—</span>;
+          },
+        }),
+        columnHelper.accessor('published', {
+          header: 'Published',
+          enableSorting: !!publishedColumn?.sortable,
+          meta: {
+            fullWidth: !!publishedColumn?.fullWidth,
+            alignment: publishedColumn?.alignment || 'left',
+            whitespace: publishedColumn?.whitespace || 'normal',
+          },
+          cell: ({ getValue }) => {
+            const published = getValue();
 
-          return published ? (
-            <time dateTime={published} className="tabular-nums">
-              {formatDate(published)}
-            </time>
-          ) : (
-            <span className="text-gold-8">—</span>
-          );
-        },
-      }),
-    ],
+            return published ? (
+              <time dateTime={published} className="tabular-nums">
+                {formatDate(published)}
+              </time>
+            ) : (
+              <span className="text-gold-8">—</span>
+            );
+          },
+        }),
+      ]),
     [titleColumn, siteColumn, publishedColumn],
   );
 

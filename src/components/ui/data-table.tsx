@@ -4,12 +4,18 @@ import { useEffect, useState } from 'react';
 
 import { useDebouncedValue } from '@tanstack/react-pacer';
 import {
+  type CellData,
   type PaginationState,
+  type RowData,
   type SortingState,
+  type TableFeatures,
   type TableOptions,
+  columnVisibilityFeature,
   flexRender,
-  getCoreRowModel,
-  useReactTable,
+  rowPaginationFeature,
+  rowSortingFeature,
+  tableFeatures,
+  useTable,
 } from '@tanstack/react-table';
 
 import { Button } from '@/components/ui/button';
@@ -26,8 +32,11 @@ import { IconChevronUpSmall } from '@/icons/chevron-up-small';
 import { cn } from '@/utils/cn';
 
 declare module '@tanstack/react-table' {
-  // @ts-expect-error – Extend the ColumnMeta interface to include custom properties
-  interface ColumnMeta {
+  interface ColumnMeta<
+    in out TFeatures extends TableFeatures,
+    in out TData extends RowData,
+    TValue extends CellData = CellData,
+  > {
     /** Text alignment for the column */
     alignment?: 'left' | 'center' | 'right';
     /** Whether the cell should fill the available width */
@@ -39,9 +48,22 @@ declare module '@tanstack/react-table' {
   }
 }
 
-export interface DataTableProps<T> {
+/**
+ * Feature set backing every {@link DataTable}. Sorting and pagination are driven
+ * manually by the caller, so neither needs a client-side row model; column
+ * visibility supplies `row.getVisibleCells()`.
+ */
+export const dataTableFeatures = tableFeatures({
+  rowSortingFeature,
+  rowPaginationFeature,
+  columnVisibilityFeature,
+});
+
+export type DataTableFeatures = typeof dataTableFeatures;
+
+export interface DataTableProps<T extends RowData> {
   data: T[];
-  columns: TableOptions<T>['columns'];
+  columns: TableOptions<DataTableFeatures, T>['columns'];
   totalCount: number;
   isLoading?: boolean;
   enableSearch?: boolean;
@@ -54,7 +76,7 @@ export interface DataTableProps<T> {
   onSearchChange: (search: string) => void;
 }
 
-export function DataTable<T>({
+export function DataTable<T extends RowData>({
   data,
   columns,
   totalCount,
@@ -78,7 +100,8 @@ export function DataTable<T>({
     }
   }, [debouncedSearch, searchValue, onSearchChange]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features: dataTableFeatures,
     data,
     columns,
     pageCount: Math.ceil(totalCount / pagination.pageSize),
@@ -97,7 +120,6 @@ export function DataTable<T>({
 
       onSortingChange(newSorting);
     },
-    getCoreRowModel: getCoreRowModel(),
   });
 
   const handleSearchInputChange = (value: string) => {
