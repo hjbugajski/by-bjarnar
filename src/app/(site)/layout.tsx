@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { Instrument_Sans, Instrument_Serif } from 'next/font/google';
 import Link from 'next/link';
 import Script from 'next/script';
@@ -48,16 +48,15 @@ export const metadata: Metadata = {
   },
 };
 
-const fetchGlobal = async (slug: GlobalSlug) => {
+const fetchCachedGlobal = async <T,>(slug: GlobalSlug): Promise<T> => {
+  'use cache';
+  cacheLife('max');
+  cacheTag(`global_${slug}`);
+
   const payload = await getPayload({ config: payloadConfig });
 
-  return payload.findGlobal({ slug });
+  return payload.findGlobal({ slug }) as Promise<T>;
 };
-
-const fetchCachedGlobal = <T,>(slug: GlobalSlug) =>
-  unstable_cache(fetchGlobal, [slug], {
-    tags: [`global_${slug}`],
-  })(slug) as Promise<T>;
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const { links } = await fetchCachedGlobal<PayloadNavigationGlobal>('navigation');
@@ -78,7 +77,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <aside className="w-full shrink-0 border-b border-gold-6 pb-2 md:max-w-56 md:border-r md:border-b-0 md:pr-6 md:pb-0">
               <div className="sticky top-6 flex w-full items-center justify-between after:hidden md:flex-col md:items-start md:justify-normal after:md:absolute after:md:-top-6 after:md:-right-6.25 after:md:block after:md:h-6 after:md:border-r-2 after:md:border-gold-2 after:md:content-['']">
                 <div className="flex flex-col gap-6">
-                  <Link href="/" className="block text-lg italic underline-offset-12 md:text-5xl">
+                  <Link
+                    href="/"
+                    prefetch
+                    className="block text-lg italic underline-offset-12 md:text-5xl"
+                  >
                     <h1 className="text-inherit">By Bjarnar</h1>
                   </Link>
                   <p className="balanced hidden text-gold-11 md:block">
@@ -90,7 +93,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <ul className="hidden gap-2 md:flex md:flex-col md:text-base">
                   {links?.map((link) => (
                     <li key={link.id}>
-                      <Link {...linkProps(link)} className="text-gold-11 hover:text-green-12">
+                      <Link
+                        {...linkProps(link)}
+                        prefetch
+                        className="text-gold-11 hover:text-green-12"
+                      >
                         {link.text}
                       </Link>
                     </li>

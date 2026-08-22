@@ -5,6 +5,7 @@ import type {
   CollectionAfterDeleteHook,
   CollectionConfig,
   FieldHook,
+  Payload,
 } from 'payload';
 
 import { Role, hasRole, hasRoleOrPublished } from '@/payload/access';
@@ -53,32 +54,56 @@ const setPath: CollectionAfterChangeHook<PayloadPagesCollection> = ({ context, d
   });
 };
 
+const revalidatePaths = (payload: Payload, paths: Iterable<string>) => {
+  let revalidated = false;
+
+  for (const path of paths) {
+    payload.logger.info(`Revalidating path: ${path}`);
+
+    if (path === '/home') {
+      revalidatePath('/');
+    }
+
+    revalidatePath(path);
+    revalidateTag(`page_${path}`, { expire: 0 });
+    revalidated = true;
+  }
+
+  if (!revalidated) {
+    return;
+  }
+
+  /*
+   * Every cached page entry carries the coarse `pages` tag, and the globals
+   * inline page breadcrumbs, so any page change can go stale elsewhere.
+   */
+  revalidateTag('pages', { expire: 0 });
+  revalidateTag('pages-sitemap', { expire: 0 });
+  revalidateTag('global_navigation', { expire: 0 });
+  revalidateTag('global_footer', { expire: 0 });
+};
+
 const revalidatePageAfterChange: CollectionAfterChangeHook<PayloadPagesCollection> = ({
   doc,
   previousDoc,
   req: { payload },
 }) => {
+  const paths = new Set<string>();
+
   if (doc._status === 'published' && doc.path) {
-    payload.logger.info(`Revalidating path: ${doc.path}`);
-
-    if (doc.path === '/home') {
-      revalidatePath('/');
-    }
-
-    revalidatePath(doc.path);
-    revalidateTag('pages-sitemap', { expire: 0 });
+    paths.add(doc.path);
   }
 
-  if (previousDoc?._status === 'published' && doc._status !== 'published' && previousDoc.path) {
-    payload.logger.info(`Revalidating previous path: ${previousDoc.path}`);
-
-    if (doc.path === '/home') {
-      revalidatePath('/');
-    }
-
-    revalidatePath(previousDoc.path);
-    revalidateTag('pages-sitemap', { expire: 0 });
+  // A published page that was unpublished or renamed leaves its old path stale.
+  if (
+    previousDoc?._status === 'published' &&
+    previousDoc.path &&
+    (previousDoc.path !== doc.path || doc._status !== 'published')
+  ) {
+    paths.add(previousDoc.path);
   }
+
+  revalidatePaths(payload, paths);
 
   return doc;
 };
@@ -88,14 +113,7 @@ export const revalidatePageAfterDelete: CollectionAfterDeleteHook<PayloadPagesCo
   req: { context, payload },
 }) => {
   if (!context.disableRevalidate && doc.path) {
-    payload.logger.info(`Revalidating path: ${doc.path}`);
-
-    if (doc.path === '/home') {
-      revalidatePath('/');
-    }
-
-    revalidatePath(doc.path);
-    revalidateTag('pages-sitemap', { expire: 0 });
+    revalidatePaths(payload, [doc.path]);
   }
 
   return doc;

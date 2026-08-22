@@ -6,6 +6,10 @@ import { Email } from '@/payload/blocks/form-fields/email';
 import { PhoneNumber } from '@/payload/blocks/form-fields/phone-number';
 import { Text } from '@/payload/blocks/form-fields/text';
 import { Textarea } from '@/payload/blocks/form-fields/textarea';
+import {
+  revalidatePagesAfterChange,
+  revalidatePagesAfterDelete,
+} from '@/payload/utils/revalidate-pages';
 
 export const Forms: CollectionConfig<'forms'> = {
   slug: 'forms',
@@ -19,6 +23,10 @@ export const Forms: CollectionConfig<'forms'> = {
   },
   versions: {
     drafts: true,
+  },
+  hooks: {
+    afterChange: [revalidatePagesAfterChange],
+    afterDelete: [revalidatePagesAfterDelete],
   },
   access: {
     read: () => true,
