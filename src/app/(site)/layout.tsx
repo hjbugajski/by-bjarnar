@@ -77,7 +77,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             <aside className="w-full shrink-0 border-b border-gold-6 pb-2 md:max-w-56 md:border-r md:border-b-0 md:pr-6 md:pb-0">
               <div className="sticky top-6 flex w-full items-center justify-between after:hidden md:flex-col md:items-start md:justify-normal after:md:absolute after:md:-top-6 after:md:-right-6.25 after:md:block after:md:h-6 after:md:border-r-2 after:md:border-gold-2 after:md:content-['']">
                 <div className="flex flex-col gap-6">
-                  <Link href="/" className="block text-lg italic underline-offset-12 md:text-5xl">
+                  <Link
+                    href="/"
+                    prefetch
+                    className="block text-lg italic underline-offset-12 md:text-5xl"
+                  >
                     <h1 className="text-inherit">By Bjarnar</h1>
                   </Link>
                   <p className="balanced hidden text-gold-11 md:block">
