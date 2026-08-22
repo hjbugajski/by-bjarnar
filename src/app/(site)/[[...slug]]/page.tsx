@@ -1,6 +1,7 @@
-import { cache } from 'react';
+import { Suspense } from 'react';
 
 import type { Metadata } from 'next';
+import { cacheLife, cacheTag } from 'next/cache';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { getPayload } from 'payload';
@@ -21,11 +22,12 @@ function pageTitle(title: string | undefined, metadata: Metadata) {
     : `${title} | ${metadata.title as string}`;
 }
 
-const fetchCachedPage = cache(async ({ slug }: { slug: string[] }) => {
-  const segments = slug || ['home'];
-  const draftModePromis = draftMode();
-  const payloadPromise = getPayload({ config });
-  const [{ isEnabled: draft }, payload] = await Promise.all([draftModePromis, payloadPromise]);
+function pagePath(slug: string[] | undefined) {
+  return `/${(slug || ['home']).join('/')}`;
+}
+
+async function findPage(path: string, draft: boolean) {
+  const payload = await getPayload({ config });
   const result = await payload.find({
     collection: 'pages',
     draft,
@@ -35,13 +37,21 @@ const fetchCachedPage = cache(async ({ slug }: { slug: string[] }) => {
     depth: 2,
     where: {
       path: {
-        equals: `/${segments.join('/')}`,
+        equals: path,
       },
     },
   });
 
   return result.docs?.[0] || null;
-});
+}
+
+async function fetchCachedPage(path: string) {
+  'use cache';
+  cacheLife('max');
+  cacheTag(`page_${path}`);
+
+  return findPage(path, false);
+}
 
 export async function generateStaticParams() {
   try {
@@ -63,8 +73,11 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  'use cache';
+  cacheLife('max');
+
   const { slug } = await params;
-  const page = await fetchCachedPage({ slug });
+  const page = await fetchCachedPage(pagePath(slug));
 
   return {
     title: pageTitle(page?.title, metadata),
@@ -72,10 +85,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Page({ params }: Props) {
-  const { isEnabled: draft } = await draftMode();
-  const { slug } = await params;
-  const page = await fetchCachedPage({ slug });
+function PageFallback() {
+  return (
+    <div aria-hidden className="flex animate-pulse flex-col gap-4">
+      <div className="h-10 w-2/3 rounded-sm bg-gold-4 xs:h-12" />
+      <div className="h-4 w-full rounded-sm bg-gold-3" />
+      <div className="h-4 w-11/12 rounded-sm bg-gold-3" />
+      <div className="h-4 w-3/4 rounded-sm bg-gold-3" />
+    </div>
+  );
+}
+
+async function PageContent({ params }: Props) {
+  const [{ slug }, { isEnabled: draft }] = await Promise.all([params, draftMode()]);
+  const path = pagePath(slug);
+  const page = draft ? await findPage(path, true) : await fetchCachedPage(path);
 
   if (!page) {
     notFound();
@@ -86,5 +110,13 @@ export default async function Page({ params }: Props) {
       {draft ? <LivePreviewListener /> : null}
       <RichText data={page.content} />
     </>
+  );
+}
+
+export default function Page({ params }: Props) {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <PageContent params={params} />
+    </Suspense>
   );
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { unstable_cache } from 'next/cache';
+import { cacheLife, cacheTag } from 'next/cache';
 import { Instrument_Sans, Instrument_Serif } from 'next/font/google';
 import Link from 'next/link';
 import Script from 'next/script';
@@ -48,16 +48,15 @@ export const metadata: Metadata = {
   },
 };
 
-const fetchGlobal = async (slug: GlobalSlug) => {
+const fetchCachedGlobal = async <T,>(slug: GlobalSlug): Promise<T> => {
+  'use cache';
+  cacheLife('max');
+  cacheTag(`global_${slug}`);
+
   const payload = await getPayload({ config: payloadConfig });
 
-  return payload.findGlobal({ slug });
+  return payload.findGlobal({ slug }) as Promise<T>;
 };
-
-const fetchCachedGlobal = <T,>(slug: GlobalSlug) =>
-  unstable_cache(fetchGlobal, [slug], {
-    tags: [`global_${slug}`],
-  })(slug) as Promise<T>;
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const { links } = await fetchCachedGlobal<PayloadNavigationGlobal>('navigation');
@@ -90,7 +89,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
                 <ul className="hidden gap-2 md:flex md:flex-col md:text-base">
                   {links?.map((link) => (
                     <li key={link.id}>
-                      <Link {...linkProps(link)} className="text-gold-11 hover:text-green-12">
+                      <Link
+                        {...linkProps(link)}
+                        prefetch
+                        className="text-gold-11 hover:text-green-12"
+                      >
                         {link.text}
                       </Link>
                     </li>

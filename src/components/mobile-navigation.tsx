@@ -36,7 +36,11 @@ export function MobileNavigation({ links }: MobileNavigationProps) {
               <li key={link.id}>
                 <Dialog.Close
                   render={
-                    <Link {...linkProps(link)} className="text-2xl font-medium text-gold-11">
+                    <Link
+                      {...linkProps(link)}
+                      prefetch
+                      className="text-2xl font-medium text-gold-11"
+                    >
                       {link.text}
                     </Link>
                   }

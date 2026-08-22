@@ -66,6 +66,7 @@ const revalidatePageAfterChange: CollectionAfterChangeHook<PayloadPagesCollectio
     }
 
     revalidatePath(doc.path);
+    revalidateTag(`page_${doc.path}`, { expire: 0 });
     revalidateTag('pages-sitemap', { expire: 0 });
   }
 
@@ -77,6 +78,7 @@ const revalidatePageAfterChange: CollectionAfterChangeHook<PayloadPagesCollectio
     }
 
     revalidatePath(previousDoc.path);
+    revalidateTag(`page_${previousDoc.path}`, { expire: 0 });
     revalidateTag('pages-sitemap', { expire: 0 });
   }
 
@@ -95,6 +97,7 @@ export const revalidatePageAfterDelete: CollectionAfterDeleteHook<PayloadPagesCo
     }
 
     revalidatePath(doc.path);
+    revalidateTag(`page_${doc.path}`, { expire: 0 });
     revalidateTag('pages-sitemap', { expire: 0 });
   }
 
