@@ -3,6 +3,10 @@ import { type CollectionConfig, type FieldHook } from 'payload';
 
 import { Role, hasRole, hasRoleOrPublished } from '@/payload/access';
 import type { PayloadArticlesCollection } from '@/payload/payload-types';
+import {
+  revalidatePagesAfterChange,
+  revalidatePagesAfterDelete,
+} from '@/payload/utils/revalidate-pages';
 import { slugify } from '@/utils/slugify';
 
 const setSlug: FieldHook<
@@ -33,6 +37,10 @@ export const Articles: CollectionConfig<'articles'> = {
   defaultSort: '-published',
   versions: {
     drafts: true,
+  },
+  hooks: {
+    afterChange: [revalidatePagesAfterChange],
+    afterDelete: [revalidatePagesAfterDelete],
   },
   fields: [
     {

@@ -48,7 +48,8 @@ async function findPage(path: string, draft: boolean) {
 async function fetchCachedPage(path: string) {
   'use cache';
   cacheLife('max');
-  cacheTag(`page_${path}`);
+  // `pages` is expired by any change to a collection inlined at depth 2.
+  cacheTag('pages', `page_${path}`);
 
   return findPage(path, false);
 }
@@ -77,7 +78,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   cacheLife('max');
 
   const { slug } = await params;
-  const page = await fetchCachedPage(pagePath(slug));
+  const path = pagePath(slug);
+
+  cacheTag('pages', `page_${path}`);
+
+  const page = await fetchCachedPage(path);
 
   return {
     title: pageTitle(page?.title, metadata),

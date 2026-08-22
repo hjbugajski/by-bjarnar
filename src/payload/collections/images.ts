@@ -3,6 +3,10 @@ import type { CollectionAfterChangeHook, CollectionConfig } from 'payload';
 import { Role, hasRole } from '@/payload/access';
 import type { PayloadImagesCollection } from '@/payload/payload-types';
 import { createDataUrl } from '@/payload/utils/create-data-url';
+import {
+  revalidatePagesAfterChange,
+  revalidatePagesAfterDelete,
+} from '@/payload/utils/revalidate-pages';
 
 const addDataUrl: CollectionAfterChangeHook<PayloadImagesCollection> = async ({
   context,
@@ -66,7 +70,8 @@ export const Images: CollectionConfig<'images'> = {
     ],
   },
   hooks: {
-    afterChange: [addDataUrl],
+    afterChange: [addDataUrl, revalidatePagesAfterChange],
+    afterDelete: [revalidatePagesAfterDelete],
   },
   fields: [
     {
