@@ -85,7 +85,7 @@
   "nano-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs}": [
       "oxlint --type-aware --fix --no-error-on-unmatched-pattern",
-      "oxfmt"
+      "oxfmt --no-error-on-unmatched-pattern"
     ],
     "*.css": [
       "stylelint --fix",
